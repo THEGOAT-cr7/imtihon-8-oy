@@ -1,57 +1,40 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = localStorage.getItem("cart")
-  ? JSON.parse(localStorage.getItem("cart"))
-  : {
-      cart: [],
-      totalPrice: 0,
-      totalAmount: 0,
-    };
+const initialState = {
+  items: [], // cart items
+};
 
-const cardSlice = createSlice({
+const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      state.cart.push(action.payload);
-    },
-    deleteItem: (state, action) => {
-      state.cart = state.cart.filter((item) => item.id !== action.payload);
+      const existing = state.items.find(p => p.id === action.payload.id);
+      if (existing) {
+        existing.amount += 1;
+      } else {
+        state.items.push({ ...action.payload, amount: 1 });
+      }
     },
     increase: (state, action) => {
-      state.cart = state.cart.map((item) =>
-        item.id === action.payload ? { ...item, amount: item.amount + 1 } : item
-      );
+      const item = state.items.find(p => p.id === action.payload);
+      if (item) item.amount += 1;
     },
     decrease: (state, action) => {
-      state.cart = state.cart.map((item) =>
-        item.id === action.payload ? { ...item, amount: item.amount - 1 } : item
-      );
+      const item = state.items.find(p => p.id === action.payload);
+      if (item) {
+        if (item.amount > 1) {
+          item.amount -= 1;
+        } else {
+          state.items = state.items.filter(p => p.id !== action.payload);
+        }
+      }
     },
-    clearCart: (state) => {
-      state.cart = [];
-      state.totalAmount = 0;
-      state.totalPrice = 0;
-    },
-    calculateTotal: (state) => {
-      let totalAmount = 0;
-      let totalPrice = 0;
-      state.cart.forEach((item) => {
-        totalAmount += item.amount;
-        totalPrice += item.amount * item.price;
-      });
-      state.totalAmount = totalAmount;
-      state.totalPrice = totalPrice;
+    remove: (state, action) => {
+      state.items = state.items.filter(p => p.id !== action.payload);
     },
   },
 });
 
-export const {
-  addToCart,
-  calculateTotal,
-  clearCart,
-  decrease,
-  deleteItem,
-  increase,
-} = cardSlice.actions;
-export default cardSlice.reducer;
+export const { addToCart, increase, decrease, remove } = cartSlice.actions;
+export default cartSlice.reducer;
