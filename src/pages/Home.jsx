@@ -181,9 +181,6 @@ function Home() {
             </div>
           )}
         </div>
-          <div>
-            efef
-          </div>
       </div>
     </div>
   );
