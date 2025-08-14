@@ -4,8 +4,8 @@ import Home from "./pages/Home";
 
 function App() {
   return (
-    <div className="pt-10 container mx-auto">
-      <div className="">
+    <div className="bg-[#FCF8F6]">
+      <div className="pt-10 container mx-auto">
         <Home />
       </div>
     </div>
