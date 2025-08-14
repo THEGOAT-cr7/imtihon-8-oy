@@ -29,12 +29,13 @@ function Home() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4">
       <h1 className="text-3xl font-bold mb-10">Desserts</h1>
-      <div className="flex gap-10">
-        <div className="flex-1 grid grid-cols-3 gap-7">
+
+      <div className="flex flex-col lg:flex-row gap-10">
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7">
           {loading ? (
-            <div className="col-span-3 flex justify-center items-center h-64">
+            <div className="col-span-full flex justify-center items-center h-64">
               <p className="text-lg text-gray-500">Loading...</p>
             </div>
           ) : (
@@ -52,7 +53,7 @@ function Home() {
                     <img
                       src={item.image?.desktop}
                       alt={item.name}
-                      className={`activeImg  object-cover hover:scale-103 transition-all h-full w-full `}
+                      className="activeImg object-cover hover:scale-103 transition-all h-full w-full"
                     />
                   </div>
 
@@ -63,10 +64,10 @@ function Home() {
                           setActiveId(item.id);
                           dispatch(addToCart(item));
                         }}
-                        className={`absolute flex gap-2 justify-between bottom-3/9 items-center px-8 py-2 rounded-full border bg-white`}
+                        className="absolute flex gap-2 justify-between bottom-3/9 items-center px-4 sm:px-8 py-2 rounded-full border bg-white"
                       >
                         <img src="../images/icon-add-to-cart.svg" alt="" />
-                        <span className="text-[#260F08] font-semibold">
+                        <span className="text-[#260F08] font-semibold text-sm sm:text-base">
                           Add to Cart
                         </span>
                       </button>
@@ -104,7 +105,8 @@ function Home() {
           )}
         </div>
 
-        <div className="w-80 bg-white p-5 rounded-xl flex flex-col gap-4 shadow-lg">
+        {/* cart */}
+        <div className="w-full lg:w-80 bg-white p-5 rounded-xl flex flex-col gap-4 shadow-lg">
           <h2 className="text-2xl font-semibold text-[#C73B0F]">
             Your Cart ({cart.reduce((sum, i) => sum + i.amount, 0)})
           </h2>
@@ -116,7 +118,7 @@ function Home() {
                 alt="Empty Cart"
                 className="w-40 h-40 object-contain"
               />
-              <p className="text-[#87635A] text-center">
+              <p className="text-[#87635A] text-center text-sm sm:text-base">
                 Your added items will appear here
               </p>
             </div>
@@ -125,29 +127,37 @@ function Home() {
               {cart.map((item) => (
                 <div
                   key={item.id}
-                  className="flex justify-between items-center border-b pb-2"
+                  className="flex flex-col border-b pb-2 gap-2"
                 >
-                  <div className="flex flex-col">
-                    <span className="font-semibold">{item.name}</span>
-                    <span className="text-gray-500">${item.price}</span>
-                  </div>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => dispatch(decrease(item.id))}
-                      className="px-2 font-bold border rounded"
-                    >
-                      &#8722;
-                    </button>
-                    <span>{item.amount}</span>
-                    <button
-                      onClick={() => dispatch(increase(item.id))}
-                      className="px-2 font-bold border rounded"
-                    >
-                      &#43;
-                    </button>
+                    <img src={item.image?.thumbnail} width={80} alt="" />
+                    <div className="flex flex-col">
+                      <span className="font-semibold sm:text-[14px]">
+                        {item.name}
+                      </span>
+                      <span className="text-gray-500">${item.price}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 flex-wrap justify-between border p-2 rounded-md border-[#C73B0F]">
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => dispatch(decrease(item.id))}
+                        className="px-2 font-bold border rounded-full"
+                      >
+                        &#8722;
+                      </button>
+                      <span>{item.amount}</span>
+                      <button
+                        onClick={() => dispatch(increase(item.id))}
+                        className="px-2 font-bold border rounded-full"
+                      >
+                        &#43;
+                      </button>
+                    </div>
                     <button
                       onClick={() => dispatch(remove(item.id))}
-                      className="px-2 py-0.5 ml-2 text-[#C73B0F] font-bold border rounded-full border-[#C73B0F]"
+                      className="px-2 py-0.5 text-[#C73B0F] font-bold border rounded-full border-[#C73B0F]"
                     >
                       X
                     </button>
