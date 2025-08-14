@@ -7,12 +7,19 @@ function Home() {
   const cart = useSelector((state) => state.cart.items);
 
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("https://json-api.uz/api/project/dessertss/desserts/")
       .then((res) => res.json())
-      .then((data) => setProducts(data.data || []))
-      .catch(() => setProducts([]));
+      .then((data) => {
+        setProducts(data.data || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setProducts([]);
+        setLoading(false);
+      });
   }, []);
 
   const getAmount = (id) => {
@@ -23,59 +30,61 @@ function Home() {
   return (
     <div className="container mx-auto flex gap-10">
       <div className="flex-1 grid grid-cols-3 gap-7">
-        {products.map((item) => {
-          const amount = getAmount(item.id);
-          return (
-            <div key={item.id} className="shadow-sm relative">
-              <div className="rounded-md overflow-hidden w-full h-64">
-                <img
-                  src={item.image?.desktop}
-                  alt={item.name}
-                  className="object-cover w-full h-full"
-                />
-              </div>
+        {loading ? (
+          <div className="col-span-3 flex justify-center items-center h-64">
+            <p className="text-lg text-gray-500">Loading...</p>
+          </div>
+        ) : (
+          products.map((item) => {
+            const amount = getAmount(item.id);
+            return (
+              <div key={item.id} className="shadow-sm relative">
+                <div className="rounded-md overflow-hidden w-full h-64">
+                  <img
+                    src={item.image?.desktop}
+                    alt={item.name}
+                    className="object-cover hover:scale-103 transition-all h-full w-full"
+                  />
+                </div>
 
-              <div className="flex justify-center">
-                {amount === 0 ? (
-                  <button
-                    onClick={() => dispatch(addToCart(item))}
-                    className="absolute flex gap-2 justify-between -bottom-5 bg-white px-8 py-2 rounded-full border"
-                  >
-                    <span>Add to Cart</span>
-                  </button>
-                ) : (
-                  <div className="absolute -bottom-5 flex items-center gap-3 bg-white px-4 py-2 rounded-full border">
+                <div className="flex justify-center">
+                  {amount === 0 ? (
                     <button
-                      onClick={() => dispatch(decrease(item.id))}
-                      className="px-2 font-bold"
+                      onClick={() => dispatch(addToCart(item))}
+                      className="absolute flex gap-2 justify-between bottom-3/10 bg-white px-8 py-2 rounded-full border"
                     >
-                      -
+                      <span>Add to Cart</span>
                     </button>
-                    <span>{amount}</span>
-                    <button
-                      onClick={() => dispatch(increase(item.id))}
-                      className="px-2 font-bold"
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => dispatch(remove(item.id))}
-                      className="ml-2 text-red-500 font-bold"
-                    >
-                      x
-                    </button>
-                  </div>
-                )}
-              </div>
+                  ) : (
+                    <div className="absolute bottom-3/10 flex items-center gap-3 bg-[#C73B0F] px-4 py-2 rounded-full">
+                      <button
+                        onClick={() => dispatch(decrease(item.id))}
+                        className="px-2 font-bold border rounded-full bg-transparent text-white border-white"
+                      >
+                        -
+                      </button>
+                      <span className="text-white">{amount}</span>
+                      <button
+                        onClick={() => dispatch(increase(item.id))}
+                        className="px-2 font-bold border rounded-full bg-transparent text-white border-white"
+                      >
+                        +
+                      </button>
+                    </div>
+                  )}
+                </div>
 
-              <div className="px-2 pt-9 pb-10">
-                <h4 className="text-sm text-gray-500">{item.category}</h4>
-                <h2 className="font-semibold text-[#C73B0F]">{item.name}</h2>
-                <h4 className="font-semibold text-red-600">${item.price}</h4>
+                <div className="px-2 pt-9 pb-10">
+                  <h4 className="text-sm text-gray-500">{item.category}</h4>
+                  <h2 className="font-semibold text-[#C73B0F]">{item.name}</h2>
+                  <h4 className="font-[850] text-xl text-red-600">
+                    ${item.price}
+                  </h4>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
       <div className="w-80 bg-white p-5 rounded-xl flex flex-col gap-4 shadow-lg">
@@ -121,9 +130,9 @@ function Home() {
                   </button>
                   <button
                     onClick={() => dispatch(remove(item.id))}
-                    className="ml-2 text-red-500 font-bold"
+                    className="px-2 py-0.5 ml-2 text-[#C73B0F] font-bold border rounded-full border-[#C73B0F]"
                   >
-                    Clear
+                    X
                   </button>
                 </div>
               </div>
