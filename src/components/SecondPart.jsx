@@ -1,5 +1,5 @@
 function SecondPart() {
-  const cart = []; 
+  const cart = [];
   const totalPrice = 0;
 
   return (
@@ -8,10 +8,10 @@ function SecondPart() {
         Your Cart ({cart.length})
       </h1>
 
-        <div className="flex flex-col items-center gap-8">
-          <img src="../images/illustration-empty-cart.svg" alt="" />
-          <p className="text-[#87635A]">Your added items will appear here</p>
-        </div>
+      <div className="flex flex-col items-center gap-8">
+        <img src="../images/illustration-empty-cart.svg" alt="" />
+        <p className="text-[#87635A]">Your added items will appear here</p>
+      </div>
     </div>
   );
 }

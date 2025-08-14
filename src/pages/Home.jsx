@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  increase,
+  decrease,
+  calculateTotal,
+} from "../app/slice/cardSlice";
 
 function Home() {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.cart);
 
+  const [products, setProducts] = useState([]);
+
+  // Fetch products from API
   useEffect(() => {
     fetch("https://json-api.uz/api/project/dessertss/desserts/")
       .then((res) => res.json())
@@ -11,41 +21,33 @@ function Home() {
       .catch(() => setProducts([]));
   }, []);
 
+  // Update totals & localStorage when cart changes
+  useEffect(() => {
+    dispatch(calculateTotal());
+    localStorage.setItem("cart", JSON.stringify({ cart }));
+  }, [cart, dispatch]);
+
+  // Helper to get amount of a product in cart
   const getAmount = (id) => {
-    const found = cart.find((item) => item.id === id);
-    return found ? found.amount : 0;
+    const item = cart.find((i) => i.id === id);
+    return item ? item.amount : 0;
   };
 
-  const addToCart = (product) => {
-    setCart((prev) => [...prev, { ...product, amount: 1 }]);
-  };
-
-  const increase = (id) => {
-    setCart((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, amount: item.amount + 1 } : item
-      )
-    );
-  };
-
-  const decrease = (id) => {
-    setCart((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, amount: item.amount - 1 } : item
-        )
-        .filter((item) => item.amount > 0)
-    );
+  // Handle add product
+  const handleAdd = (item) => {
+    dispatch(addToCart(item));
   };
 
   return (
     <div className="container mx-auto">
-        <div className="text-3xl font-bold mb-5">
-          <h1>Desserts</h1>
-        </div>
+      <div className="text-3xl font-bold mb-5">
+        <h1>Desserts</h1>
+      </div>
+
       <div className="grid grid-cols-3 gap-7">
         {products.map((item) => {
           const amount = getAmount(item.id);
+
           return (
             <div key={item.id} className="shadow-sm">
               <div className="relative">
@@ -59,23 +61,23 @@ function Home() {
 
                 <div className="flex justify-center">
                   {amount === 0 ? (
-                    <button 
-                      onClick={() => addToCart(item)}
+                    <button
+                      onClick={() => handleAdd(item)}
                       className="absolute flex gap-2 justify-between -bottom-5 bg-white px-8 py-2 rounded-full border"
                     >
-                     <img src="../images/icon-add-to-cart.svg" alt="" /> <span>Add to Cart</span>
+                      <span>Add to Cart</span>
                     </button>
                   ) : (
                     <div className="absolute -bottom-5 flex items-center gap-3 bg-white px-4 py-2 rounded-full border">
                       <button
-                        onClick={() => decrease(item.id)}
+                        onClick={() => dispatch(decrease(item.id))}
                         className="px-2 font-bold"
                       >
                         -
                       </button>
                       <span>{amount}</span>
                       <button
-                        onClick={() => increase(item.id)}
+                        onClick={() => dispatch(increase(item.id))}
                         className="px-2 font-bold"
                       >
                         +
