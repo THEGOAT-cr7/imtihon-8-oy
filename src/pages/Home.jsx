@@ -30,10 +30,9 @@ function Home() {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-3xl font-bold mb-10">Desserts</h1>
-
-      <div className="flex flex-col lg:flex-row gap-10">
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7">
+      <h1 className="text-3xl font-bold mb-5">Desserts</h1>
+      <div className="flex  lg:flex-row gap-10 flex-col">
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 xl gap-7">
           {loading ? (
             <div className="col-span-full flex justify-center items-center h-64">
               <p className="text-lg text-gray-500">Loading...</p>
@@ -105,8 +104,8 @@ function Home() {
           )}
         </div>
 
-        {/* cart */}
-        <div className="w-full lg:w-80 bg-white p-5 rounded-xl flex flex-col gap-4 shadow-lg">
+        {/* right panel */}
+        <div className="w-full lg:w-80 bg-white p-5 rounded-xl flex flex-col gap-4 shadow-lg overflow-scroll h-100">
           <h2 className="text-2xl font-semibold text-[#C73B0F]">
             Your Cart ({cart.reduce((sum, i) => sum + i.amount, 0)})
           </h2>
@@ -130,12 +129,27 @@ function Home() {
                   className="flex flex-col border-b pb-2 gap-2"
                 >
                   <div className="flex items-center gap-2">
-                    <img src={item.image?.thumbnail} width={80} alt="" />
+                    <img
+                      src={item.image?.thumbnail}
+                      className="rounded-md"
+                      width={80}
+                      alt=""
+                    />
                     <div className="flex flex-col">
                       <span className="font-semibold sm:text-[14px]">
                         {item.name}
                       </span>
-                      <span className="text-gray-500">${item.price}</span>
+                      <div className="flex items-center gap-5" key={item.id}>
+                        <span className="text-[#C73B0F] font-semibold">
+                          {cart.reduce((sum, i) => sum + i.amount, 0)}X
+                        </span>
+                        <span className="text-gray-500">${item.price}</span>
+                        <span className="text-gray-500">
+                          $
+                          {item.price *
+                            cart.reduce((sum, i) => sum + i.amount, 0)}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -167,6 +181,9 @@ function Home() {
             </div>
           )}
         </div>
+          <div>
+            efef
+          </div>
       </div>
     </div>
   );

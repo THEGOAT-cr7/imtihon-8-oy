@@ -1,5 +1,12 @@
-@import "tailwindcss";  
+@import "tailwindcss";
 
 body {
   font-family: "Red Hat Text", sans-serif;
+}
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 20px;
+  background-color: #c73b0f;
 }
